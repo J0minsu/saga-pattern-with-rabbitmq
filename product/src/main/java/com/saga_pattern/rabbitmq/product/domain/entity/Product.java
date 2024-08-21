@@ -44,11 +44,12 @@ public class Product {
 
     public void reduceStock(Integer stock) {
 
-        if(this.stock < stock) {
-            throw new IllegalArgumentException("Stock must be greater than stock");
-        }
         this.stock -= stock;
 
+    }
+
+    public void increaseStock(Integer stock) {
+        this.stock += stock;
     }
 
 }

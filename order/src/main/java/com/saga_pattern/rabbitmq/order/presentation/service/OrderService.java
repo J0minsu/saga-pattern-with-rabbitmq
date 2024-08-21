@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -24,6 +25,7 @@ public class OrderService {
     private final RabbitTemplate rabbitTemplate;
     private final OrderRepository orderRepository;
 
+    @Transactional
     public Order createOrder(OrderRequestDto orderRequestDto) {
         Order order = orderRequestDto.toOrder();
         DeliveryMessage deliveryMessage = orderRequestDto.toDeliveryMessage(order.getOrderId());
@@ -39,6 +41,7 @@ public class OrderService {
 
     }
 
+    @Transactional
     public void rollbackOrder(DeliveryMessage message) {
         Order order = getOrder(message.getOrderId());
 
@@ -47,6 +50,7 @@ public class OrderService {
 
     }
 
+    @Transactional(readOnly = true)
     public Order getOrder(UUID orderId) {
         return orderRepository.findById(orderId)
                             .orElseThrow(() -> new IllegalStateException("일치하는 주문이 없습니다."));
